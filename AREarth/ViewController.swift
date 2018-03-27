@@ -23,11 +23,28 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
         
-        // Create a new scene
-        let scene = SCNScene(named: "art.scnassets/ship.scn")!
+        let scene = SCNScene()
         
-        // Set the scene to the view
         sceneView.scene = scene
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        let touch = touches.first
+        let location = touch?.location(in: sceneView)
+        
+        let hitresults = sceneView.hitTest(location!, types: .featurePoint)
+        
+        if let hitTestResult = hitresults.first {
+            let transform = hitTestResult.worldTransform
+            let position = SCNVector3(x: transform.columns.3.x, y: transform.columns.3.y, z: transform.columns.3.z)
+            
+        let newEarth = EarthNode()
+        newEarth.position = position
+            
+        sceneView.scene.rootNode.addChildNode(newEarth)
+            
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
